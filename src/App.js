@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import './App.css';
 import logo from './logo.svg';
 import socket from 'socket.io-client';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+
+
 let io = socket();
 
 
@@ -11,22 +15,37 @@ class App extends Component {
 
     this.state = {
       msgValue: "",
-      messages: []
+      messages: [],
+      username: ""
     }
     
     io.on('message', msg => this.setState({ messages: [...this.state.messages, '\n' + msg] }) );
-
+    
     this.handleChange = this.handleChange.bind(this);
     this.addMsg = this.addMsg.bind(this);
   }
 
+  componentWillMount(){
+    this.setState({username: prompt("What's your alias?")});
+    
+  }
+  
   handleChange(event) {
     this.setState({ msgValue: event.target.value });
+    event.preventDefault();
   }
 
   addMsg(event){
-    io.emit('chat message', this.state.msgValue);
-    event.preventDefault();
+    if(this.state.msgValue != "" && this.state.msgValue.length <= 150){
+      io.emit('chat message', `${this.state.username}: ${this.state.msgValue}`);
+      
+      event.preventDefault();
+      this.setState({ msgValue: "" });
+    }
+    else{
+      alert('fuck you');
+      this.setState({ msgValue: "" });
+    }
   }
 
   render() {
@@ -42,9 +61,9 @@ class App extends Component {
               })
             }
           </ul>
-          <form action="">
-            <input id="m" value={this.state.msgValue} onChange={this.handleChange}/>
-            <button onClick={this.addMsg}>Send</button>
+          <form action="" method="get">
+            <TextField className="TextField" id="m" value={this.state.msgValue} onChange={this.handleChange}/>
+            <Button className="Button" type="submit" onClick={this.addMsg} variant="contained">Send</Button>
           </form>
       </div>
     );
