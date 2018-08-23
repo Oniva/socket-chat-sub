@@ -2,16 +2,15 @@
 
 const express = require('express');
 const socketIO = require('socket.io');
-const path = require('path');
+const PORT = process.env.PORT || 5000;
+var path = require('path');
 
-const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname, '/build/index.html');
-
-const server = express()
-  .use((req, res) => res.sendFile(INDEX) )
+const app = express()
+  .use('/build', express.static('/build'))
+  .use((req, res) => res.sendFile(path.join(__dirname+'/build/index.html')))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
-const io = socketIO(server);
+const io = socketIO(app);
 
 io.on('connection', (client) => {
     client.on('chat message', msg => {

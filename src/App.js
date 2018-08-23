@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import logo from './logo.svg';
-import openSocket from 'socket.io-client';
-const  socket = openSocket(process.env.PORT || '3000');
+import socket from 'socket.io-client';
+let io = socket();
 
 
 class App extends Component {
@@ -14,7 +14,7 @@ class App extends Component {
       messages: []
     }
     
-    socket.on('message', msg => this.setState({ messages: [...this.state.messages, '\n' + msg] }) );
+    io.on('message', msg => this.setState({ messages: [...this.state.messages, '\n' + msg] }) );
 
     this.handleChange = this.handleChange.bind(this);
     this.addMsg = this.addMsg.bind(this);
@@ -25,7 +25,7 @@ class App extends Component {
   }
 
   addMsg(event){
-    socket.emit('chat message', this.state.msgValue);
+    io.emit('chat message', this.state.msgValue);
     event.preventDefault();
   }
 
@@ -35,7 +35,6 @@ class App extends Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
         </header>
-        <body>
           <ul id="messages">
             {
               this.state.messages.map(function(msg, i){
@@ -47,7 +46,6 @@ class App extends Component {
             <input id="m" value={this.state.msgValue} onChange={this.handleChange}/>
             <button onClick={this.addMsg}>Send</button>
           </form>
-        </body>
       </div>
     );
   }
