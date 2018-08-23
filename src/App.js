@@ -29,20 +29,21 @@ class App extends Component {
     this.setState({username: prompt("What's your alias?")});
     
   }
-  
+
   handleChange(event) {
     this.setState({ msgValue: event.target.value });
     event.preventDefault();
   }
 
   addMsg(event){
-    if(this.state.msgValue != "" && this.state.msgValue.length <= 150){
+    if(this.state.msgValue !== "" && this.state.msgValue.length <= 150){
       io.emit('chat message', `${this.state.username}: ${this.state.msgValue}`);
       
       event.preventDefault();
       this.setState({ msgValue: "" });
     }
     else{
+      event.preventDefault();
       alert('fuck you');
       this.setState({ msgValue: "" });
     }
