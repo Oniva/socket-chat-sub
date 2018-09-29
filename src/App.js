@@ -44,7 +44,7 @@ class App extends Component {
     }
     else{
       event.preventDefault();
-      alert('fuck you');
+      alert('Stop.');
       this.setState({ msgValue: "" });
     }
   }
